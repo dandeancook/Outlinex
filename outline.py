@@ -123,6 +123,8 @@ class OutlineRefreshCommand(TextCommand):
 
             # Regular item:    
             else:
+                symlist[i] = re.sub("import\x20","#",symlist[i])
+
                 # In a file with regions
                 if has_regions: 
                     # Warn: Temp is not symlist[i]
@@ -132,7 +134,12 @@ class OutlineRefreshCommand(TextCommand):
                         symlist[i] = "⩥Indented"
                     else:
                         Indent = ""
-                        if idx(Indented_Syms,Temp)>=0: Indent="\u3000"
+
+                        if idx(Indented_Syms,Temp)>=0 or idx(Temp.lower(),"case\x20")>=0: 
+                            Indent="\u3000"
+                        if idx(Temp.lower(),"case\x20")>=0:
+                            symlist[i] = re.sub("case\x20", "$", symlist[i])
+                            symlist[i] = re.sub('"',        "",  symlist[i])
 
                         # WARN: THIS IS NOT A REGULAR SPACE, A LARGE SPACE \u3000
                         # See:  https://en.wikipedia.org/wiki/Whitespace_character
